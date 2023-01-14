@@ -1,1 +1,4 @@
 .env
+curls.md
+node_modules
+package-lock.json
