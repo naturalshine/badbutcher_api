@@ -23,7 +23,7 @@ app.use(morgan('combined'));
 
 const {startDatabase} = require('./database/mongo');
 const {insertSlaughtered, getSlaughtered, deleteSlaughtered, updateSlaughtered} = require('./database/slaughtered');
-const { authenticateToken } = require("./handlers")
+const { authenticateToken } = require("./utils/handlers")
 
 // endpoint to add a slaughtered NFT
 app.post('/', authenticateToken, async (req, res) => {
@@ -55,26 +55,27 @@ app.post('/login', async(req, res) => {
 	const { username, password } = req.body
 
 	if (!username || !password || process.env.JWT_USER != username || process.env.JWT_PW !== password) {
-		return res.status(401).end()
+    return res.status(401).end()
 	}
 
 	const token = jwt.sign({ username }, process.env.JWT_SECRET, {
 		algorithm: "HS256",
 		expiresIn: 1800,
 	})
-	console.log("token:", token)
 
-	res.json({
-    success: true,
-    message: 'Authentication successful!',
-    token: token
-  });
+  res
+  .cookie("access_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+    })
+    .status(200)
+    .json({ message: "Logged in successfully 😊 👌" });
 });
 
 //start the app
 startDatabase().then(async () => {
   // dummy data for dev
-  //await insertSlaughtered({title: 'Hello, now from the in-memory database!'});
+  await insertSlaughtered({title: 'Hello, now from the in-memory database!'});
 
   app.listen(process.env.PORT, async () => {
     console.log('listening on port ' + process.env.PORT);
