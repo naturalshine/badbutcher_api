@@ -2,3 +2,10 @@
 curls.md
 node_modules
 package-lock.json
+src/scripts/butcherpy/models
+src/scripts/butcherpy/fx/*
+src/scripts/butcherpy/masks/*
+src/scripts/butcherpy/slaughtered_img/*
+src/scripts/butcherpy/slaughtered_parts/*
+src/scripts/butcherpy/src_img/*
+.secret

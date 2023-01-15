@@ -1,5 +1,5 @@
 // ./src/database/slaughtered.js
-const { getDatabase } = require('./mongo');
+const { getDatabase } = require('../database/mongo');
 const { ObjectId } = require('mongodb');
 
 const collectionName = 'slaughtered';
@@ -15,31 +15,42 @@ async function getSlaughtered() {
   return await database.collection(collectionName).find({}).toArray();
 }
 
+async function getSingleSlaughtered(sid){
+    const database = await getDatabase();
+    return await database.collection(collectionName).find({id: sid}).toArray();
+}
+
 
 async function deleteSlaughtered(id) {
   const database = await getDatabase();
-  await database.collection(collectionName).deleteOne({
+  return await database.collection(collectionName).deleteOne({
     _id: new ObjectId(id),
   });
 }
 
-async function updateSlaughtered(id, ad) {
+async function updateSlaughtered(id, insertKey, insertVal) {
   const database = await getDatabase();
-  delete ad._id;
-  await database.collection(collectionName).update(
+  return await db.collection(collectionName).update(
+    { '_id':id }, 
+    { insertKey : insertVal }
+  ); 
+}
+  // reset field: {$set: {image : filename}}, 
+  /*return await database.collection(collectionName).update(
     { _id: new ObjectId(id), },
     {
       $set: {
-        ...ad,
+        ...img,
       },
     },
   );
-}
+}*/
 
 
 module.exports = {
     insertSlaughtered,
     getSlaughtered,
     deleteSlaughtered,
-    updateSlaughtered
+    updateSlaughtered,
+    getSingleSlaughtered
 };
