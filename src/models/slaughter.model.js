@@ -3,8 +3,6 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-//TODO update w metadata
-
 /* This is creating a new schema for the SLAUGHTER model. */
 const slaughterSchema = new Schema(
   {
@@ -14,16 +12,16 @@ const slaughterSchema = new Schema(
     description: {
       type: String,
     },
-    chain: {
+    butcheredChain: {
       type: String,
     }, 
-    projectName: {
+    project: {
       type: String,
     },
     originalImage: {
       type: String, 
     },
-    slaughteredImage: {
+    butcheredImage: {
       type: String,
     },
     imagePieces: {
@@ -35,10 +33,13 @@ const slaughterSchema = new Schema(
     butcheredTokenId: {
       type: String,
     },
-    ownerOfButcheredToken: {
+    butcheredOwner: {
       type: String,
     },
-    butcheredProjectName: {
+    butcheredProject: {
+      type: String,
+    },
+    butcheredName: {
       type: String,
     },
     butcheredSymbol: {
@@ -47,19 +48,28 @@ const slaughterSchema = new Schema(
     butcheredRoyaltyHolder: {
       type: String,
     },
-    butcheredRoyaltyAmount: {
+    butcheredRoyalty: {
       type: String,
     },
     royaltyHolder: {
       type: String,
     },
-    royaltyAmount: {
+    royalty: {
       type: Decimal128,
     }, 
-    minterAddress: {
+    butcherMinter: {
       type: String,
     },
-    symbol:{
+    butcheredMetadataUrl:{
+      type: String,
+    },
+    butcheredImageUrl:{
+      type: String,
+    },
+    ipfsImage:{
+      type: String,
+    },
+    ipfsMetadata:{
       type: String,
     }
   },
@@ -68,3 +78,6 @@ const slaughterSchema = new Schema(
 
 module.exports = mongoose.model("Slaughter", slaughterSchema);
 
+
+
+  
