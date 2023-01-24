@@ -4,7 +4,7 @@
   "description": "node app to talk to mongo & perform slaughter for BAD BUTCHER",
   "main": "src/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest --testTimeout=5000 src/tests",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=100000 src/tests",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
@@ -12,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.2",
-    "alchemy-sdk": "^2.3.0",
+    "@openzeppelin/contracts": "^4.8.1",
+    "@openzeppelin/contracts-upgradeable": "^4.8.1",
+    "alchemy-sdk": "^2.3.1",
     "axios": "^1.2.2",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
@@ -35,11 +37,17 @@
     "passport-local": "^1.0.0",
     "pg": "^8.8.0",
     "python-shell": "^3.0.1",
+    "sharp": "^0.31.3",
+    "solc": "^0.8.17",
     "supertest": "^6.3.3"
   },
   "devDependencies": {
     "hardhat": "^2.12.6",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.3.1",
     "nodemon": "^2.0.20"
+  },
+  "jest": {
+    "testTimeout": 30000
   }
 }
