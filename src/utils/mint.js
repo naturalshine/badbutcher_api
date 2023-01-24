@@ -1,25 +1,58 @@
 require("dotenv").config();
 
-const ethers = require('ethers')
+const { ethers } = require('ethers')
 
-// figure this out
-const contract = require("../contract-abi.json");
-const contractInterface = contract.abi;
+const contractABI = require('../../contract-abi.json');
+/*
+const mintToken = async(pinataUrl, royaltyHolder, royalty) => {
+    try{        
+        const contractAddress = process.env.CONTRACT_ADDRESS
+        const PolyBadButcher = await ethers.getContractFactory("PolyBadButcher")
+        //const [owner] = await ethers.getSigners()
 
-let provider = ethers.provider;
+        const finalRoyalty = Math.trunc(royalty * 100)
+        
+        const tokenId = await PolyBadButcher.attach(contractAddress).mintWithRoyalty(process.env.CSTWALLET, pinataUrl, royaltyHolder, finalRoyalty )
+        console.log("tokenId =>", tokenId)
 
-const mintToken = async(pinataUrl) => {
+
+        // TODO: 
+        return {
+            success:true,
+            message: tokenId
+        }
+
+    } catch (error){
+        return {
+            success:false,
+            message: error
+        }
+
+    }
+
+ }
+
+        const contractAddress = process.env.CONTRACT_ADDRESS
+        const PolyBadButcher = await ethers.getContractFactory("PolyBadButcher")
+        //const [owner] = await ethers.getSigners()
+
+        const finalRoyalty = Math.trunc(royalty * 100)
+         
+*/
+
+const mintToken = async(pinataUrl, royaltyHolder, royalty, butcheredOwner) => {
     let nft;
     try{
         const privateKey = `0x${process.env.PRIVATE_KEY}`;
         const wallet = new ethers.Wallet(privateKey);
-    
+        const provider = new ethers.providers.AlchemyProvider(80001, process.env.ALCHEMY_KEY)
+
         wallet.provider = provider;
         const signer = wallet.connect(provider);
     
         nft = new ethers.Contract(
             process.env.CONTRACT_ADDRESS,
-            contractInterface,
+            contractABI,
             signer
         );
     
@@ -30,34 +63,34 @@ const mintToken = async(pinataUrl) => {
   console.log("Waiting for 5 blocks to confirm...");
 
   let mintedToken;
+  const finalRoyalty = Math.trunc(royalty * 100)
 
-  nft
-    .mintNFT(process.env.PUBLIC_KEY, pinataUrl)
-    .then((tx) => tx.wait(5))
-    .then((receipt) => {
-        console.log(`Confirmed! Your transaction receipt is: ${receipt.transactionHash}`)
-        mintedToken = receipt    
-    })
-    .catch((error) => {
-        console.log("Something went wrong", error)
-        return {
-            success: false,
-            message: error
-        }
-    });
+  await nft
+        .mintWithRoyalty(butcheredOwner, pinataUrl, royaltyHolder, finalRoyalty)
+        .then((tx) => tx.wait(5))
+        .then((receipt) => {
+            console.log(`Confirmed! Your transaction receipt is: ${receipt.transactionHash}`)
+            mintedToken = receipt    
+        })
+        .catch((error) => {
+            console.log("Something went wrong", error)
+            return {
+                success: false,
+                message: error
+            }
+        });
 
     return {
         success:true,
         message: mintedToken
     }
-
-
-
 }
 
 module.exports = {
     mintToken,
 }
+
+
 
 
 /*const { ethers } = require("ethers")
