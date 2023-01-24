@@ -13,3 +13,4 @@ hardhat.config.js
 flattened.sol
 artifacts/
 cache/
+src/scripts/butcherpy/interim_img/*
