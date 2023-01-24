@@ -1,16 +1,17 @@
-async function main() {
-    // Grab the contract factory 
-    //used to deploy new smart contracts
-    const BadButcher = await ethers.getContractFactory("BadButcher");
- 
-    // Start deployment, returning a promise that resolves to a contract object
-    const BTCHR = await BadButcher.deploy(); // Instance of the contract 
-    console.log("Contract deployed to address:", BTCHR.address);
- }
- 
- main()
-   .then(() => process.exit(0))
-   .catch(error => {
-     console.error(error);
-     process.exit(1);
-   });
+async function deployContract() {
+  const PolyBadButcher = await ethers.getContractFactory("PolyBadButcher")
+  const polyBadButcher = await PolyBadButcher.deploy()
+  await polyBadButcher.deployed()
+  // This solves the bug in Mumbai network where the contract address is not the real one
+  const txHash = polyBadButcher.deployTransaction.hash
+  const txReceipt = await ethers.provider.waitForTransaction(txHash)
+  const contractAddress = txReceipt.contractAddress
+  console.log("Contract deployed to address:", contractAddress)
+}
+
+deployContract()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+});

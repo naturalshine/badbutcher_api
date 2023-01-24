@@ -9,3 +9,7 @@ src/scripts/butcherpy/slaughtered_img/*
 src/scripts/butcherpy/slaughtered_parts/*
 src/scripts/butcherpy/src_img/*
 .secret
+hardhat.config.js
+flattened.sol
+artifacts/
+cache/
