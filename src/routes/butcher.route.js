@@ -29,7 +29,7 @@ router.delete("/slaughtered/:id", authenticateToken, deleteSlaughtered);
 
 router.post("/login", loginSlaughtered);
 
-router.post("/slaughter", authenticateToken, doButcher);
+router.post("/butcher", authenticateToken, doButcher);
 
 module.exports = router;
 
