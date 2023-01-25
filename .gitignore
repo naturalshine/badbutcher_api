@@ -14,3 +14,4 @@ flattened.sol
 artifacts/
 cache/
 src/scripts/butcherpy/interim_img/*
+segmented_object_*
