@@ -3,6 +3,7 @@ import sys
 import pixellib
 import tensorflow as tf
 import cv2
+import multiprocessing
 
 from pixellib.instance import instance_segmentation
 from pixellib.tune_bg import alter_bg
@@ -14,6 +15,7 @@ original_image = "src_img/"
 
 
 print(tf.__version__)
+
 
 
 def walk_files(dir):
@@ -88,20 +90,20 @@ def create_slaughtered_parts():
 	# auto gen the file names up ? 4? 5? we don't need to caputre all
 
 	i = 1
+	files = walk_files(dirPath + '/slaughtered_parts')
 
 	while i < 5:
 		try:
-			imgFile = dirPath + '/segmented_object_' + str(i) + '.jpg'
+			imgFile = dirPath + '/../../../segmented_object_' + str(i) + '.jpg'
+			print("IMAGE FILE =>", imgFile)
 			if os.path.exists(imgFile):
-				files = walk_files(dirPath + '/slaughtered_parts')
 				imgIndex = str(files - 1 + i)
 				slaughteredPart = 's' + imgIndex + '.png'
-
 				img = Image.open(imgFile)
 				rgba = img.convert("RGBA")
 				datas = rgba.getdata()
 				newData = []
-
+				
 				for item in datas:
 					if item[0] == 0 and item[1] == 0 and item[2] == 0:
 						newData.append((255, 255, 255, 0))
@@ -109,7 +111,7 @@ def create_slaughtered_parts():
 						newData.append(item)
 
 					rgba.putdata(newData)
-
+				
 				rgba.save(dirPath + '/slaughtered_parts/' + slaughteredPart, "PNG")
 				
 				os.remove(imgFile)
@@ -148,11 +150,12 @@ if __name__ == '__main__':
 
 	# this function should run on the output of the automatically-named segmentImage script above
 	# it converts the output to transparent bg so that it can be pasted
-	# unclear on how to best handle this given the (a) unclear # of output images from segmentImage and
-	# (b) the difficulty of putting them in a location
-	# most likely, it should assume a MAX NR, try for that, and then catch the error
-	# del each image as it works to prevent a mess/duplication in the future? 
-	create_slaughtered_parts()
+	p = multiprocessing.Process(target=create_slaughtered_parts)
+	p.start()
+	p.join(10)
+	if p.is_alive():
+		p.terminate()
+		p.join()
 
 	# del working images
 	os.remove(dirPath + '/interim_img/'+image+'.png')
