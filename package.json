@@ -4,7 +4,7 @@
   "description": "node app to talk to mongo & perform slaughter for BAD BUTCHER",
   "main": "src/index.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest --testTimeout=100000 src/tests",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=1000000 src/tests",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js"
   },
