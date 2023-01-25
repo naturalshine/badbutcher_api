@@ -23,7 +23,7 @@ const doButcher = async (req, res) => {
     console.log("helloooooo")
 
     //TODO --> remove this when further in testing, use incoming from app
-    const imageBuffer = await sharp(path.resolve(__dirname, '../scripts/butcherpy/src_img/001.png')).toFormat('png').toBuffer();
+    const imageBuffer = await sharp(path.resolve(__dirname, '../scripts/butcherpy/src_img/milady.avif')).toFormat('png').toBuffer();
     //const img = await fsPromises.readFile(path.resolve(__dirname, './001.png'));
 
     let butcherId, metadata
@@ -179,7 +179,7 @@ const doButcher = async (req, res) => {
                 "royalty": newRoyaltyAmount,
                 "ipfsImage": pinataResponseImg.pinataUrl,
                 "ipfsMetadata": pinataResponse.pinataUrl,
-                //"mintedToken": mintedToken
+                "tokenId": mintedToken.message,
             }, {
             new: true,
         });
@@ -190,9 +190,9 @@ const doButcher = async (req, res) => {
             "image": finalNft,
             "royaltyHolder": newRoyaltyHolder,
             "royaltyAmount": newRoyaltyAmount,
-            "metadata": pinataResponse.pinataUrl,
-            "image": pinataResponseImg.pinataUrl,
-            //"mintedToken": mintedToken
+            "ipfsMetadata": pinataResponse.pinataUrl,
+            "ipfsImage": pinataResponseImg.pinataUrl,
+            "tokenId": mintedToken.message,
         });
 
     } catch (error) {

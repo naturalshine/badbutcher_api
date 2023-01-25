@@ -12,6 +12,9 @@ const slaughterSchema = new Schema(
     description: {
       type: String,
     },
+    tokenId: {
+      type: String,
+    },
     butcheredChain: {
       type: String,
     }, 
