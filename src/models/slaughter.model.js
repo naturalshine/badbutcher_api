@@ -39,7 +39,7 @@ const slaughterSchema = new Schema(
     butcheredOwner: {
       type: String,
     },
-    butcheredProject: {
+    butcheredDescription: {
       type: String,
     },
     butcheredName: {

@@ -16,14 +16,15 @@ const { mintToken } = require("../utils/mint")
 
 const { formatMetadata } = require("../utils/metadata")
 
-const { butcherPy } = require("../utils/butcherpy")
+const { butcherPy } = require("../utils/butcherpy");
+const { Console } = require('console');
 
 
 const doButcher = async (req, res) => {  
     console.log("helloooooo")
 
     //TODO --> remove this when further in testing, use incoming from app
-    const imageBuffer = await sharp(path.resolve(__dirname, '../scripts/butcherpy/src_img/milady.avif')).toFormat('png').toBuffer();
+    //const imageBuffer = await sharp(path.resolve(__dirname, '../scripts/butcherpy/src_img/milady.avif')).toFormat('png').toBuffer();
     //const img = await fsPromises.readFile(path.resolve(__dirname, './001.png'));
 
     let butcherId, metadata
@@ -31,8 +32,12 @@ const doButcher = async (req, res) => {
 
         console.log("doButcher req.body =>", req.body);
         
-        //TODO: Image here: 
-        //imageBuffer = req.body.image;
+        const image64 = req.body.image.split(';base64,').pop();
+        console.log("SERVER IMAGE64 =>", image64)
+        const image64Buffer = Buffer.from(image64, 'base64');
+        console.log("SERVER IMAGE64Buffer =>", image64Buffer)
+        imageBuffer = await sharp(image64Buffer).toBuffer();
+        console.log("SERVER IMAGE BUFFER =>", imageBuffer);
 
         metadata = req.body.metadata;
 
@@ -51,14 +56,9 @@ const doButcher = async (req, res) => {
         });
     }
     
-    // construct
-    let imgPath = process.env.SLAUGHTERPATH
-    let srcDir = imgPath + process.env.SLAUGHTERDIR
-    let nftDir = imgPath + process.env.NFTDIR
 
-    // save image to server file system using variable derived from ? id?
-    const origImg = srcDir + '/' + butcherId + '.png';
 
+    // get random wallet from pool of minters for the royalty holder
     let newRoyaltyHolder, newRoyaltyAmount
 
     try{
@@ -73,20 +73,19 @@ const doButcher = async (req, res) => {
 
     // create random royalty
     newRoyaltyAmount = Math.floor(Math.random() * 100);
-    metadata[0].attributes.push({"trait_type": "royaltyHolder", "value": newRoyaltyHolder});
-    metadata[0].attributes.push({"trait_type": "royalty", "value": newRoyaltyAmount});
+    metadata.attributes.push({"trait_type": "royaltyHolder", "value": newRoyaltyHolder});
+    metadata.attributes.push({"trait_type": "royalty", "value": newRoyaltyAmount});
+
+    // construct image paths
+    let imgPath = process.env.SLAUGHTERPATH
+    let srcDir = imgPath + process.env.SLAUGHTERDIR
+    let nftDir = imgPath + process.env.NFTDIR
+    
+    // save image to server file system using variable derived from ? id?
+    const origImg = srcDir + '/' + butcherId + '.png';
 
     try{
-        await sharp(imageBuffer).toFile(path.resolve(__dirname, '../' + origImg), (err, info) => { 
-            if(err){
-                throw new Error("writing???");
-            }
-            if(info){
-                console.log(info);
-            }else{
-                console.log("NO INFO BISH")
-            }
-         });
+        await sharp(imageBuffer).toFormat('png').toFile(path.resolve(__dirname, '../' + origImg));
     }catch(error){
         console.log(error);
         res.status(500).json({
@@ -131,7 +130,7 @@ const doButcher = async (req, res) => {
         const nftReadStream = fs.createReadStream(nftImg)
         formData.append("file", nftReadStream);
 
-        const imgMetadata = JSON.stringify({"name": metadata[0].name});
+        const imgMetadata = JSON.stringify({"name": metadata.name});
         formData.append('pinataMetadata', imgMetadata);
 
         
@@ -149,16 +148,19 @@ const doButcher = async (req, res) => {
             throw new Error('Pinata image handling failed')
         }
 
-        metadata[0].image = pinataResponseImg.pinataUrl
+        metadata.image = pinataResponseImg.pinataUrl
         
         // THEN, MAKE METADATA
-        pinataResponse = await pinToIPFS("pinJSONToIPFS", metadata[0]);
+        pinataResponse = await pinToIPFS("pinJSONToIPFS", metadata);
         if (!pinataResponse.success) {
             throw new Error('Pinata metadata handling failed')
         } 
     
     } catch(error){
         console.log(error)
+        res.status(500).json({
+            "error": error,
+        });
     }
     
     let mintedToken;
@@ -193,6 +195,7 @@ const doButcher = async (req, res) => {
             "ipfsMetadata": pinataResponse.pinataUrl,
             "ipfsImage": pinataResponseImg.pinataUrl,
             "tokenId": mintedToken.message,
+            "contract": process.env.CONTRACT_ADDRESS
         });
 
     } catch (error) {

@@ -32,9 +32,9 @@ def select_slaughtered_parts(files):
 
 	rimg = Image.open(pimg)
 	rimg1 = random.randrange(0, 700)
-	rimg1 = random.randrange(0, 700)
+	rimg2 = random.randrange(0, 700)
 
-	return [rimg, rimg1, rimg1]
+	return [rimg, rimg1, rimg2]
 
 def create_nft(image):
 	# we are going to rotate the image at randomly chosen angle
@@ -86,9 +86,6 @@ def create_nft(image):
 	#change_bg.blur_bg("mutant_final.png", low=True, output_image_name="mutant_final_blur.png")
 
 def create_slaughtered_parts():
-	# obv this should go into a function and have a loop iterate
-	# auto gen the file names up ? 4? 5? we don't need to caputre all
-
 	i = 1
 	files = walk_files(dirPath + '/slaughtered_parts')
 

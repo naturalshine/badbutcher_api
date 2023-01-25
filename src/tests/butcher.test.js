@@ -112,7 +112,7 @@ describe("BUTCHER /api/butcher", () => {
               { 'trait_type': 'butcheredName',
               'value': 'Dumb Thing'
               },
-              { 'trait_type': 'butcheredProject',
+              { 'trait_type': 'butcheredDescription',
                 'value': 'Dumb Things'
               },
               { 'trait_type': 'butcheredOwner',

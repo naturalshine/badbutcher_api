@@ -1,4 +1,7 @@
+const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
+
 
 // auth handler
 async function authenticateToken(req, res, next) {
@@ -6,6 +9,7 @@ async function authenticateToken(req, res, next) {
     if (process.env.NODE_ENV == "development" || process.env.NODE_ENV == "test"){
       next()
     } else {
+
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
     

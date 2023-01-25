@@ -15,7 +15,9 @@ app.use(express.json());
 app.use(helmet());
 
 // enabling CORS for all requests
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000'
+}));
 
 // adding morgan to log HTTP requests
 app.use(morgan('combined'));
@@ -25,6 +27,8 @@ app.use(morgan('combined'));
 app.get("/", (req, res) => {
   res.status(200).json({ alive: "True" });
 });
+
+
 
 /* Telling the server to use the routes in the ButcherRoutes file. */
 app.use("/api", ButcherRoutes);
