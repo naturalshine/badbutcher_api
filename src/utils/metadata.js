@@ -15,7 +15,7 @@ const formatMetadata = async(metadata) => {
     saveFormat.butcheredName = metadata.attributes.find(o => o.trait_type === 'butcheredName').value;
     saveFormat.butcheredRoyaltyHolder = metadata.attributes.find(o => o.trait_type === 'butcheredRoyaltyHolder').value;
     saveFormat.butcheredSymbol = metadata.attributes.find(o => o.trait_type === 'butcheredSymbol').value;
-    saveFormat.butcheredRoyalty = metadata.attributes.find(o => o.trait_type === 'butcheredRoyaltyAmount').value;
+    saveFormat.butcheredRoyalty = metadata.attributes.find(o => o.trait_type === 'butcheredRoyalty').value;
     saveFormat.butcherMinter = metadata.attributes.find(o => o.trait_type === 'butcherMinter').value;
     saveFormat.butcheredMetadataUrl = metadata.attributes.find(o => o.trait_type === 'butcheredMetadataUrl').value;
     saveFormat.butcheredImageUrl = metadata.attributes.find(o => o.trait_type === 'butcheredImageUrl').value;

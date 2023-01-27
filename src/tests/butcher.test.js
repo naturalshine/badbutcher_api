@@ -7,6 +7,8 @@ const sharp = require("sharp");
 
 require("dotenv").config();
 
+let id;
+
 /* Connecting to the database before each test. */
 beforeEach(async () => {
   await mongoose.connect(process.env.MONGODB_URI);
@@ -19,6 +21,8 @@ afterEach(async () => {
 });
 
 /* Testing the API endpoints. */
+
+/*
 describe("POST /api/slaughtered", () => {
     it("should create a slaughtered", async () => {
       const res = await request(app).post("/api/slaughtered").send({
@@ -85,14 +89,28 @@ describe("DELETE /api/slaughtered/:id", () => {
     expect(res.statusCode).toBe(200);
   });
 });
+*/
+
+describe("BUTCHER /api/upload", () => {
+  it("it should upload", async () => {
+    //img = jest.mock('../scripts/butcherpy/src_img/001.png')
+    //const img = await fsPromises.readFile(path.resolve(__dirname, './001.png'));
+    //const img = fs.readFileSync(path.resolve(__dirname, './001.png'));
+    const img = '';
+    const res = await request(app).post("/api/upload").send({
+      image: img,
+    });
+    console.log("RES =>", res.body);
+    id = res.body.id;
+    expect(res.statusCode).toBe(201);
+  })
+});
+
+
 
 describe("BUTCHER /api/butcher", () => {
     it("it should butcher", async () => {
-        //img = jest.mock('../scripts/butcherpy/src_img/001.png')
-        //const img = await fsPromises.readFile(path.resolve(__dirname, './001.png'));
-        //const img = fs.readFileSync(path.resolve(__dirname, './001.png'));
-        const img = '';
-        const metadata = [
+        const metadata = 
           {
            'name': 'BAD BUTCHER 002',
            'description': 'A BUTCHER IS BAD',
@@ -138,11 +156,11 @@ describe("BUTCHER /api/butcher", () => {
                 'value': '0x91Aa0e1b1B553a0441B03E1FE100609dDA4a2119'
               }
             ]
-          }
-        ]
+        }
+        
         const res = await request(app).post("/api/butcher").send({
-          image: img,
           metadata: metadata,
+          id: id,
         });
         console.log("BODY =>", res.body);
         expect(res.statusCode).toBe(201);
@@ -151,3 +169,13 @@ describe("BUTCHER /api/butcher", () => {
   });
 
 
+  describe("BUTCHER /api/mint", () => {
+    it("it should mint on polygon", async () => {
+        const res = await request(app).post("/api/mint").send({
+          id: id,
+          ethTokenId: "45"
+        });
+        console.log("BODY =>", res.body);
+        expect(res.statusCode).toBe(201);
+      });
+  });

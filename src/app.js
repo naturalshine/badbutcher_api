@@ -3,10 +3,14 @@ const express = require("express");
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const bodyParser = require('body-parser')
 
 const ButcherRoutes = require("./routes/butcher.route");
 
 const app = express();
+
+app.use(bodyParser.json({limit: '100mb'}));
+app.use(bodyParser.urlencoded({limit: '100mb', extended: true}));
 
 /* A middleware that parses the body of the request and makes it available in the req.body object. */
 app.use(express.json());

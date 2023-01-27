@@ -90,11 +90,27 @@ const deleteSlaughtered = async (req, res) => {
     }
   };
 
+  /**
+ * It finds a slaughter by its id and deletes it.
+ * @param req - The request object. This object represents the HTTP request and has properties for the
+ * request query string, parameters, body, HTTP headers, and so on.
+ * @param res - The response object.
+ */
+const deleteAllSlaughtered = async (req, res) => {
+  try {
+    const slaughtered = await Slaughter.remove({});
+    res.status(200).json(slaughtered);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
 
 module.exports = {
     insertSlaughtered,
     getSlaughtered,
     deleteSlaughtered,
     updateSlaughtered,
-    getSingleSlaughtered
+    getSingleSlaughtered,
+    deleteAllSlaughtered
 };

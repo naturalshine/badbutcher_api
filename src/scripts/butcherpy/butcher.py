@@ -38,7 +38,7 @@ def select_slaughtered_parts(files):
 
 def create_nft(image):
 	# we are going to rotate the image at randomly chosen angle
-	rot_arr = [-180, -90, 90, 180]
+	rot_arr = [-90, 90, 180]
 	rot = random.choice(rot_arr)
 	
 	# choose a random mask from the mask lib

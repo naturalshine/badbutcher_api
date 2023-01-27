@@ -12,7 +12,10 @@ const slaughterSchema = new Schema(
     description: {
       type: String,
     },
-    tokenId: {
+    polygonTokenId: {
+      type: String,
+    },
+    ethTokenId: {
       type: String,
     },
     butcheredChain: {
@@ -24,11 +27,11 @@ const slaughterSchema = new Schema(
     originalImage: {
       type: String, 
     },
-    butcheredImage: {
+    imageName: {
       type: String,
     },
-    imagePieces: {
-      type: Array,
+    butcheredImage: {
+      type: String,
     },
     butcheredContract: {
       type: String,
