@@ -33,7 +33,6 @@ const butcherPy = async (srcImg, royaltyHolder, royaltyHolderAmount) => {
 
         await RunPythonScript(butcherPath, srcImg, royaltyHolder, royaltyHolderAmount); 
         
-        
         return {
             success: true, 
             message: "Image created"

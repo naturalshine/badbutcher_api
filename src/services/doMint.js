@@ -4,28 +4,13 @@ const Slaughter = require("../models/slaughter.model");
 const { mintToken } = require("../utils/mint")
 
 const doMint = async (req, res) => {  
-
-    const butcheredObj = await Slaughter.findById(req.body.id);
-    
-    let mintedToken;
-    
     try{
-        mintedToken = await mintToken(butcheredObj.ipfsMetadata, butcheredObj.royaltyHolder, butcheredObj.royalty, butcheredObj.butcheredOwner);
-        console.log("minted token =>", mintedToken.message);
 
-    } catch(error){
-        console.log(error);
-        res.status(500).json({
-            success: false, 
-            error: error,
-            message: mintedToken.message
-        });
+        const butcheredObj = await Slaughter.findById(req.body.id);
+        
+        const mintedToken = await mintToken(butcheredObj.ipfsMetadata, butcheredObj.royaltyHolder, butcheredObj.royalty, butcheredObj.butcheredOwner);
 
-    }
-
-    // retrieve db entry and return
-
-    try{
+        // retrieve db entry and return
         await Slaughter.findByIdAndUpdate(req.body.id, 
             {
                 "polygonTokenId": mintedToken.message,
@@ -34,7 +19,7 @@ const doMint = async (req, res) => {
             new: true,
         });
 
-    
+        console.log("Mint complete with token id =>", mintedToken.message);
         res.status(201).json({
             "name": butcheredObj.name,
             "polygonTokenId": mintedToken.message,
@@ -44,7 +29,6 @@ const doMint = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json(error);
-    
     }
 }
 
