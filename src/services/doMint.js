@@ -14,7 +14,6 @@ const doMint = async (req, res) => {
         await Slaughter.findByIdAndUpdate(req.body.id, 
             {
                 "polygonTokenId": mintedToken.message,
-                "ethTokenId": req.body.ethTokenId,
             }, {
             new: true,
         });

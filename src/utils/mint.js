@@ -19,8 +19,6 @@ const mintToken = async(pinataUrl, royaltyHolder, royalty, butcheredOwner) => {
             signer
         );
 
-        console.log("Waiting for 5 blocks to confirm...");
-
         let tokenId;
         const finalRoyalty = Math.trunc(royalty * 100)
 
