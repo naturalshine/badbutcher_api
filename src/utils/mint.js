@@ -2,8 +2,7 @@ require("dotenv").config();
 
 const { ethers } = require('ethers')
 
-const contractABI = require('../../contract-abi.json');
-
+const contractABI = require('../../abis/contract-abi.json');
 
 const mintToken = async(pinataUrl, royaltyHolder, royalty, butcheredOwner) => {
     try{
