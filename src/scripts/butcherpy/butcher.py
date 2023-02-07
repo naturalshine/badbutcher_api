@@ -42,7 +42,7 @@ def create_nft(image):
 	rot = random.choice(rot_arr)
 	
 	# choose a random mask from the mask lib
-	mot = str(random.randint(0,5))
+	mot = str(random.randint(0,2))
 	mask_file = dirPath + '/masks/mask' + mot + '.png'
 	
 	# open the make file
@@ -54,13 +54,15 @@ def create_nft(image):
 
 
 	change_bg.blur_bg(dirPath + '/src_img/' + image + '.png', low = True, output_image_name=dirPath + '/interim_img/' + image + '_blur.png')
-	seg.segmentImage(dirPath + '/interim_img/' + image + '_blur.png', show_bboxes=True, output_image_name=dirPath + '/interim_img/' + image + '_blur_segmented.png')
+	seg.segmentImage(dirPath + '/src_img/' + image + '.png', show_bboxes=True, output_image_name=dirPath + '/interim_img/' + image + '_blur_segmented.png')
 	bg = Image.open(dirPath + '/interim_img/' + image + '_blur_segmented.png').resize(mask.size)
 
 	#bg = Image.new('RGB', mask.size, (255, 0, 0))
-	img =Image.open(dirPath + '/interim_img/'+image+'.png').resize(mask.size)
+	img =Image.open(dirPath + '/src_img/'+image+'.png').resize(mask.size)
+	rgbimg = Image.new("RGBA", img.size)
+	rgbimg.paste(img)
 
-	img = img.rotate(rot, Image.NEAREST, expand=1)
+	rgbimg = rgbimg.rotate(rot, Image.NEAREST, expand=1)
 	mask=mask.rotate(rot, Image.NEAREST, expand=1)
 
 	blood = Image.open(dirPath + '/fx/blood.png')
@@ -79,7 +81,7 @@ def create_nft(image):
 		except: 
 			break
 
-	nft = Image.composite(bg, img, mask)
+	nft = Image.composite(bg, rgbimg, mask)
 	#nft = nft.rotate(-90, Image.NEAREST, expand = 1)
 
 	nft.save(dirPath + '/slaughtered_img/' + image + '.png') 
@@ -136,6 +138,11 @@ if __name__ == '__main__':
 	seg.load_model(dirPath + "/models/mask_rcnn_coco.h5")
 
 	image = sys.argv[1]
+
+	## save to grayscale here
+	img = Image.open(dirPath + '/src_img/' + image + '.png').convert('L')
+	img.save(dirPath + '/src_img/' + image + '.png')
+
 
 	# this should now be done after the process is finished so that parts of butchered nft don't leak into current butchering
 	# how to control where files are stored? just with output? can you delete output image after this process so that 
