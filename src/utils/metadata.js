@@ -1,6 +1,7 @@
 
 const formatMetadata = async(metadata) => {
     const saveFormat = {}
+
     console.log("METADATA =>", metadata)
     console.log("ATTRIBUTES =>", typeof metadata.attributes)
 

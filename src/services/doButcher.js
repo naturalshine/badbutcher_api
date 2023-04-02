@@ -25,6 +25,8 @@ const doButcher = async (req, res) => {
         console.log("doButcher req.body =>", req.body);
     
         const metadata = req.body.metadata[0];
+        //const metadata = req.body.metadata
+        console.log(metadata)
         const butcherId = req.body.butcherId
 
         // format NFT metadata for flat object storage
@@ -51,6 +53,7 @@ const doButcher = async (req, res) => {
         
         // retrieve name of image saved in last api call
         const imageName = slaughtered.imageName;
+        //const imageName = 'butcher51'
 
         const pythonReturn = await butcherPy(imageName, newRoyaltyHolder, newRoyaltyAmount);
         
@@ -65,7 +68,7 @@ const doButcher = async (req, res) => {
         const formData = new FormData();
         const nftReadStream = fs.createReadStream(nftImg)
         formData.append("file", nftReadStream);
-
+        
         const imgMetadata = JSON.stringify({"name": metadata.name});
         formData.append('pinataMetadata', imgMetadata);
 
@@ -92,6 +95,8 @@ const doButcher = async (req, res) => {
             throw new Error('Pinata metadata handling failed')
         } 
 
+        console.log("PINATA RESPONSE =>", pinataResponse)
+
         const nftUpdate = await Slaughter.findByIdAndUpdate(butcherId, 
             {
                 "butcheredImage": nftImg,
@@ -103,7 +108,20 @@ const doButcher = async (req, res) => {
             new: true,
         });
 
-    
+        console.log("NFT UPDATE =>", nftUpdate);
+
+        console.log("RETURN DATA =>", [{
+                                        "name": metadata.name,
+                                        "royaltyHolder": newRoyaltyHolder,
+                                        "royaltyAmount": newRoyaltyAmount,
+                                        "ipfsMetadata": pinataResponse.pinataUrl,
+                                        "ipfsImage": pinataResponseImg.pinataUrl,
+                                        "contract": process.env.CONTRACT_ADDRESS,
+                                        "finalMetadata": metadata,
+                                        "id": butcherId,
+                                    }])
+        
+        
         res.status(201).json({
             "name": metadata.name,
             "royaltyHolder": newRoyaltyHolder,

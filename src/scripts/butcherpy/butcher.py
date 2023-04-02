@@ -44,7 +44,7 @@ def create_nft(image):
 	# choose a random mask from the mask lib
 	mot = str(random.randint(0,2))
 	mask_file = dirPath + '/masks/mask' + mot + '.png'
-	
+
 	# open the make file
 	mask = Image.open(mask_file).convert('L')
 
@@ -54,38 +54,57 @@ def create_nft(image):
 
 
 	change_bg.blur_bg(dirPath + '/src_img/' + image + '.png', low = True, output_image_name=dirPath + '/interim_img/' + image + '_blur.png')
+	
 	seg.segmentImage(dirPath + '/src_img/' + image + '.png', show_bboxes=True, output_image_name=dirPath + '/interim_img/' + image + '_blur_segmented.png')
+
 	bg = Image.open(dirPath + '/interim_img/' + image + '_blur_segmented.png').resize(mask.size)
 
-	#bg = Image.new('RGB', mask.size, (255, 0, 0))
-	img =Image.open(dirPath + '/src_img/'+image+'.png').resize(mask.size)
-	rgbimg = Image.new("RGBA", img.size)
-	rgbimg.paste(img)
 
-	rgbimg = rgbimg.rotate(rot, Image.NEAREST, expand=1)
-	mask=mask.rotate(rot, Image.NEAREST, expand=1)
+	try:
+		#bg = Image.new('RGB', mask.size, (255, 0, 0))
+		img =Image.open(dirPath + '/src_img/'+image+'.png').resize(mask.size)
+		rgbimg = Image.new("RGBA", img.size)
+		rgbimg.paste(img)
+	except: 
+		print("background problem")
+	
+	try:
+		rgbimg = rgbimg.rotate(rot, Image.NEAREST, expand=1)
+		mask=mask.rotate(rot, Image.NEAREST, expand=1)
+	except: 
+		print("mask problem")
 
-	blood = Image.open(dirPath + '/fx/blood.png')
-	blood = blood.rotate(rot, Image.NEAREST, expand=1)
-	bg.paste(blood, (0,0), blood)
+	try:
+		contour_file = dirPath + '/fx/contour_' + mot + '.png'
+		contour = Image.open(contour_file)
+		contour = contour.rotate(rot, Image.NEAREST, expand=1)
+		bg.paste(contour, (0,0), contour)
+	except:
+		print("contour failed")
 
-	files = walk_files(dirPath + '/slaughtered_parts')
 
-	i = 0
+	try:
+		bot = str(random.randint(0,1))
+		blood_file = dirPath + '/fx/blood_' + mot + '_' + bot + '.png'
+		blood = Image.open(blood_file)
+		blood.resize(mask.size)
+		blood = blood.rotate(rot, Image.NEAREST, expand=1)
+		bg.paste(blood, (0,0), blood)
+	except:
+		print("blood failed")
+	
 
-	while i<3:
-		try:
-			[rimg, rimg1, rimg2] = select_slaughtered_parts(files)
-			bg.paste(rimg, (rimg1,rimg2), rimg)
-			i = i+1
-		except: 
-			break
-
-	nft = Image.composite(bg, rgbimg, mask)
-	#nft = nft.rotate(-90, Image.NEAREST, expand = 1)
-
-	nft.save(dirPath + '/slaughtered_img/' + image + '.png') 
-	#change_bg.blur_bg("mutant_final.png", low=True, output_image_name="mutant_final_blur.png")
+	try:
+		nft = Image.composite(bg, rgbimg, mask)
+		border_file = dirPath + '/fx/border.png'
+		border = Image.open(border_file)
+		nft.paste(border, (0,0), border)
+		butcher_file = dirPath + '/fx/butcher_illusion.png'
+		butcher = Image.open(butcher_file)
+		nft.paste(butcher, (0,0), butcher)
+		nft.save(dirPath + '/slaughtered_img/' + image + '.png') 
+	except:
+		print("nft failed")
 
 def create_slaughtered_parts():
 	i = 1
@@ -154,12 +173,14 @@ if __name__ == '__main__':
 
 	# this function should run on the output of the automatically-named segmentImage script above
 	# it converts the output to transparent bg so that it can be pasted
+	'''
 	p = multiprocessing.Process(target=create_slaughtered_parts)
 	p.start()
 	p.join(10)
 	if p.is_alive():
 		p.terminate()
 		p.join()
+	'''
 
 	# del working images
 	os.remove(dirPath + '/interim_img/'+image+'.png')

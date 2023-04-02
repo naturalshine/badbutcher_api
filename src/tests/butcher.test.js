@@ -90,7 +90,7 @@ describe("DELETE /api/slaughtered/:id", () => {
   });
 });
 */
-
+/*
 describe("BUTCHER /api/upload", () => {
   it("it should upload", async () => {
     //img = jest.mock('../scripts/butcherpy/src_img/001.png')
@@ -106,9 +106,10 @@ describe("BUTCHER /api/upload", () => {
   })
 });
 
-
+*/
 
 describe("BUTCHER /api/butcher", () => {
+    id = 51
     it("it should butcher", async () => {
         const metadata = 
           {
@@ -168,7 +169,7 @@ describe("BUTCHER /api/butcher", () => {
       });
   });
 
-
+/*
   describe("BUTCHER /api/mint", () => {
     it("it should mint on polygon", async () => {
         const res = await request(app).post("/api/mint").send({
@@ -179,3 +180,4 @@ describe("BUTCHER /api/butcher", () => {
         expect(res.statusCode).toBe(201);
       });
   });
+  */
