@@ -99,7 +99,8 @@ def create_nft(image):
 		border_file = dirPath + '/fx/border.png'
 		border = Image.open(border_file)
 		nft.paste(border, (0,0), border)
-		butcher_file = dirPath + '/fx/butcher_illusion.png'
+		bot = str(random.randint(0,6))
+		butcher_file = dirPath + '/fx/butcher' + bot + '_1.png'
 		butcher = Image.open(butcher_file)
 		nft.paste(butcher, (0,0), butcher)
 		nft.save(dirPath + '/slaughtered_img/' + image + '.png') 

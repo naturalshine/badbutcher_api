@@ -13,7 +13,7 @@ import "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol"
 
 /// @custom:security-contact cst@cst.yt
 
-contract PolyBadButcher is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable, PausableUpgradeable, OwnableUpgradeable, UUPSUpgradeable, ERC2981Upgradeable {
+contract BoundButcher is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable, PausableUpgradeable, OwnableUpgradeable, UUPSUpgradeable, ERC2981Upgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     CountersUpgradeable.Counter private _tokenIdCounter;
@@ -24,7 +24,7 @@ contract PolyBadButcher is Initializable, ERC721Upgradeable, ERC721EnumerableUpg
     }
 
     function initialize() initializer public {
-        __ERC721_init("PolyBadButcher", "BTCR");
+        __ERC721_init("BoundButcher", "BTCR");
         __ERC721Enumerable_init();
         __ERC721URIStorage_init();
         __Pausable_init();
@@ -41,7 +41,7 @@ contract PolyBadButcher is Initializable, ERC721Upgradeable, ERC721EnumerableUpg
     }
 
 
-    function mintWithRoyalty(address recipient, string memory uri, address royaltFeeReceiver, uint96 fee) public returns(uint256){
+    function mintWithRoyalty(address recipient, string memory uri, address royaltFeeReceiver, uint96 fee) public onlyOwner returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(recipient, tokenId);
@@ -58,14 +58,16 @@ contract PolyBadButcher is Initializable, ERC721Upgradeable, ERC721EnumerableUpg
         _setTokenURI(tokenId, uri);
     }
 
+
     function _beforeTokenTransfer(address from, address to, uint256 tokenId, uint256 batchSize)
         internal
         whenNotPaused
         override(ERC721Upgradeable, ERC721EnumerableUpgradeable)
     {
+        require(from == address(0) || to == address(0), "Sorry babe, this BUTCHER is SOULBOUND.");
         super._beforeTokenTransfer(from, to, tokenId, batchSize);
-    }
 
+    }
 
     function _authorizeUpgrade(address newImplementation)
         internal

@@ -1,9 +1,9 @@
 async function deployContract() {
-  const PolyBadButcher = await ethers.getContractFactory("PolyBadButcher")
-  const polyBadButcher = await PolyBadButcher.deploy()
-  await polyBadButcher.deployed()
+  const BoundButcher = await ethers.getContractFactory("BoundButcher")
+  const boundButcher = await BoundButcher.deploy()
+  await boundButcher.deployed()
   // This solves the bug in Mumbai network where the contract address is not the real one
-  const txHash = polyBadButcher.deployTransaction.hash
+  const txHash = boundButcher.deployTransaction.hash
   const txReceipt = await ethers.provider.waitForTransaction(txHash)
   const contractAddress = txReceipt.contractAddress
   console.log("Contract deployed to address:", contractAddress)
